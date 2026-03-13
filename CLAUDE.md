@@ -11,7 +11,9 @@ sudo systemctl start spacenavd
 pip install spnav ur_rtde
 ```
 
-**Known spnav issue:** `PyCObject_AsVoidPtr` is deprecated. Find the spnav package (`find . -name "spnav"`) and replace all instances of `PyCObject_AsVoidPtr` with `PyCapsule_GetPointer` in `__init__.py`.
+**Known spnav issue:** `PyCObject_AsVoidPtr` is deprecated. Find the spnav package (`find / -path "*/spnav/__init__.py"`) and replace all instances of `PyCObject_AsVoidPtr` with `PyCapsule_GetPointer` in `__init__.py`. On this machine the fix has already been applied at `/home/robotics/anaconda3/lib/python3.12/site-packages/spnav/__init__.py`.
+
+**spnav install issue:** `pip install spnav` may fail due to setuptools compatibility. Use `pip install spnav --no-build-isolation` instead.
 
 ## Running
 
@@ -32,17 +34,16 @@ The system has three layers:
 
 **Robot control** (RTDE): Uses `ur_rtde` to send Cartesian velocity commands (`speedL`) at 100Hz to the robot. Requires robot to be in mode 7 (running). Robot IP is hardcoded as `ROBOT_HOST = "192.168.0.2"`.
 
-**Gripper control** (`robotiq_gripper.py`, `RobotiqGripper` class): Communicates with Robotiq HAND-E gripper via TCP socket on port 63352. Uses string-based SET/GET protocol. `activate()` resets and re-activates the gripper with auto-calibration to determine actual min/max positions.
-
 **Gripper control** (`reference/robotiq_gripper.py`): Not currently in use. When connected, communicates with Robotiq HAND-E via TCP socket on port 63352. Two reference modes exist in `reference/`: button open/close, or incremental position control (0–255).
 
 ## Key Parameters
 
 | Parameter | Location | Value |
 |-----------|----------|-------|
-| `ROBOT_HOST` | Both teleop scripts | `192.168.0.2` |
-| `SCALE_FACTOR` | Both teleop scripts | `0.3` |
-| `max_value` | `Spacemouse.__init__` | `300` (wired, current hardware) |
+| `ROBOT_HOST` | `3DConnexion_UR3_Teleop.py` | `192.168.0.2` |
+| `SCALE_FACTOR` | `3DConnexion_UR3_Teleop.py` | `0.02` |
+| `acceleration` | `3DConnexion_UR3_Teleop.py` | `0.5` |
+| `max_value` | `Spacemouse.__init__` | `300` (wired SpaceMouse) |
 | Deadzone threshold | `get_motion_state_transformed` | `0.3` |
 | Control loop rate | `main()` | 100Hz (`time.sleep(1/100)`) |
 

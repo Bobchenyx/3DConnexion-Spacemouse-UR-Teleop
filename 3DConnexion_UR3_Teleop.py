@@ -99,7 +99,7 @@ class Spacemouse(Thread):
 
 # UR3 robot parameters
 ROBOT_HOST = "192.168.0.2"  # UR3 controller IP
-SCALE_FACTOR = 0.3          # Scale factor for velocity command
+SCALE_FACTOR = 0.02         # Scale factor for velocity command
 
 def main():
     sm = Spacemouse()
@@ -113,7 +113,7 @@ def main():
         while True:
             if rtde_r.getRobotMode() == 7:
                 motion_state = sm.get_motion_state_transformed()
-                rtde_c.speedL(motion_state, acceleration=1.5, time=0.1)
+                rtde_c.speedL(motion_state, acceleration=0.5, time=0.1)
 
                 actual_velocity = rtde_r.getActualTCPSpeed()
                 actual_velocity = [0 if abs(x) < 0.01 else x for x in actual_velocity]
