@@ -1,7 +1,8 @@
 from rtde_control import RTDEControlInterface
 from rtde_receive import RTDEReceiveInterface 
 from rtde_io import RTDEIOInterface as RTDEIO
-import robotiq_gripper
+# [OPTIONAL - Robotiq Gripper] Comment out if no gripper is connected
+# import robotiq_gripper
 from spnav import spnav_open, spnav_poll_event, spnav_close, SpnavMotionEvent, SpnavButtonEvent
 from threading import Thread, Event
 from collections import defaultdict
@@ -9,7 +10,7 @@ import numpy as np
 import time
 
 class Spacemouse(Thread):
-    def __init__(self, max_value=500, deadzone=(0,0,0,0,0,0), dtype=np.float32):
+    def __init__(self, max_value=300, deadzone=(0,0,0,0,0,0), dtype=np.float32):
         """
         Continuously listen to 3D connection space naviagtor events
         and update the latest state.
@@ -104,7 +105,7 @@ class Spacemouse(Thread):
             spnav_close()
 
 # Define robot parameters
-ROBOT_HOST = "192.168.20.124"  # IP address of the robot controller
+ROBOT_HOST = "192.168.0.2"  # IP address of the robot controller
 SCALE_FACTOR = 0.3 # Scale factor for velocity command
 
 def main():
@@ -115,12 +116,13 @@ def main():
     rtde_r = RTDEReceiveInterface(ROBOT_HOST)
     rtde_io = RTDEIO(ROBOT_HOST)
     
-    print("Creating gripper...")
-    gripper = robotiq_gripper.RobotiqGripper()
-    print("Connecting to gripper...")
-    gripper.connect(ROBOT_HOST, 63352)
-    print("Activating gripper...")
-    gripper.activate()
+    # [OPTIONAL - Robotiq Gripper] Comment out the following block if no gripper is connected
+    # print("Creating gripper...")
+    # gripper = robotiq_gripper.RobotiqGripper()
+    # print("Connecting to gripper...")
+    # gripper.connect(ROBOT_HOST, 63352)
+    # print("Activating gripper...")
+    # gripper.activate()
     try:
         while True:
             if rtde_r.getRobotMode() == 7:
@@ -138,11 +140,11 @@ def main():
                 #get TCP pose of robot
                 #actual_pose = rtde_r.getActualTCPPose()
                 #print(actual_pose)
-                if sm.is_button_pressed(0):
-                    gripper.move(gripper.get_open_position(), 255, 255)
-                
-                if sm.is_button_pressed(1):
-                    gripper.move(gripper.get_closed_position(), 255, 255)
+                # [OPTIONAL - Robotiq Gripper] Comment out if no gripper is connected
+                # if sm.is_button_pressed(0):
+                #     gripper.move(gripper.get_open_position(), 255, 255)
+                # if sm.is_button_pressed(1):
+                #     gripper.move(gripper.get_closed_position(), 255, 255)
 
                 #wait awhile before proceeding 
                 time.sleep(1/100)
