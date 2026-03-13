@@ -16,14 +16,13 @@ pip install spnav ur_rtde
 ## Running
 
 ```bash
-# Basic teleoperation (open/close gripper with buttons)
-python3 3DConnexion_UR5_Teleop.py
-
-# Teleoperation with continuous gripper position control
-python3 3DConnexion_UR5_Teleop_Gripper_Control.py
+# UR3 teleoperation (current main script)
+python3 3DConnexion_UR3_Teleop.py
 ```
 
 Stop with `Ctrl+C` — this triggers graceful shutdown (stops RTDE script and SpaceMouse thread).
+
+Reference scripts for UR5 and gripper control are in `reference/`.
 
 ## Architecture
 
@@ -35,9 +34,7 @@ The system has three layers:
 
 **Gripper control** (`robotiq_gripper.py`, `RobotiqGripper` class): Communicates with Robotiq HAND-E gripper via TCP socket on port 63352. Uses string-based SET/GET protocol. `activate()` resets and re-activates the gripper with auto-calibration to determine actual min/max positions.
 
-**Two gripper control modes:**
-- `3DConnexion_UR5_Teleop.py`: Button 0 = fully open, Button 1 = fully closed
-- `3DConnexion_UR5_Teleop_Gripper_Control.py`: Buttons increment/decrement `gripper_position` by 3 (range 0–255) for finer control
+**Gripper control** (`reference/robotiq_gripper.py`): Not currently in use. When connected, communicates with Robotiq HAND-E via TCP socket on port 63352. Two reference modes exist in `reference/`: button open/close, or incremental position control (0–255).
 
 ## Key Parameters
 
