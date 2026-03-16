@@ -38,6 +38,11 @@ python3 scripts/check_spacemouse.py
 
 Both scripts print at 10Hz max and stop printing when the device is idle.
 
+```bash
+# Check UR3 connection and status (does not move the robot)
+python3 scripts/check_robot.py
+```
+
 ## Architecture
 
 The system has three layers:
