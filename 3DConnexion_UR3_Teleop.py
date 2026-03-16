@@ -99,7 +99,7 @@ class Spacemouse(Thread):
 
 # UR3 robot parameters
 ROBOT_HOST = "192.168.0.2"  # UR3 controller IP
-SCALE_FACTOR = 0.02         # Scale factor for velocity command
+SCALE_FACTOR = 0.1         # Scale factor for velocity command
 
 def main():
     sm = Spacemouse(deadzone=0.2)  # normalized deadzone threshold [0, 1]; inputs below this value are ignored
