@@ -43,8 +43,9 @@ The system has three layers:
 | `ROBOT_HOST` | `3DConnexion_UR3_Teleop.py` | `192.168.0.2` |
 | `SCALE_FACTOR` | `3DConnexion_UR3_Teleop.py` | `0.02` |
 | `acceleration` | `3DConnexion_UR3_Teleop.py` | `0.5` |
-| `max_value` | `Spacemouse.__init__` | `300` (wired SpaceMouse) |
-| Deadzone threshold | `Spacemouse.__init__` (`deadzone=`) | `0.2` |
+| `max_value` | `Spacemouse.__init__` | `300` (wired); use `500` for wireless SpaceMouse |
+| `deadzone` | `Spacemouse.__init__` (`deadzone=`) | `0.2` — scalar applies to all 6 axes; pass a 6-tuple for per-axis control |
+| `speedL time` | `main()` | `0.1` s safety timeout: robot decelerates and stops if no new command arrives within this window |
 | Control loop rate | `main()` | 100Hz (`time.sleep(1/100)`) |
 
 ## Lab Hardware Configuration
