@@ -30,7 +30,7 @@ Reference scripts for UR5 and gripper control are in `reference/`.
 
 The system has three layers:
 
-**SpaceMouse input** (`Spacemouse` class, a `Thread`): Polls `spnav` events at 200Hz and stores the latest `SpnavMotionEvent` and button states. The `get_motion_state_transformed()` method applies a coordinate frame rotation (`tx_zup_spnav`) to convert from SpaceMouse frame to robot frame, applies a 0.3 deadzone, and scales by `SCALE_FACTOR`.
+**SpaceMouse input** (`Spacemouse` class, a `Thread`): Polls `spnav` events at 200Hz and stores the latest `SpnavMotionEvent` and button states. The `get_motion_state_transformed()` method applies a coordinate frame rotation (`tx_zup_spnav`) to convert from SpaceMouse frame to robot frame and scales by `SCALE_FACTOR`. Deadzone is configured via the `deadzone=` constructor parameter (unified in one place); the hardcoded per-axis deadzone in `get_motion_state_transformed()` has been removed.
 
 **Robot control** (RTDE): Uses `ur_rtde` to send Cartesian velocity commands (`speedL`) at 100Hz to the robot. Requires robot to be in mode 7 (running). Robot IP is hardcoded as `ROBOT_HOST = "192.168.0.2"`.
 
@@ -44,7 +44,7 @@ The system has three layers:
 | `SCALE_FACTOR` | `3DConnexion_UR3_Teleop.py` | `0.02` |
 | `acceleration` | `3DConnexion_UR3_Teleop.py` | `0.5` |
 | `max_value` | `Spacemouse.__init__` | `300` (wired SpaceMouse) |
-| Deadzone threshold | `get_motion_state_transformed` | `0.3` |
+| Deadzone threshold | `Spacemouse.__init__` (`deadzone=`) | `0.2` |
 | Control loop rate | `main()` | 100Hz (`time.sleep(1/100)`) |
 
 ## Lab Hardware Configuration
