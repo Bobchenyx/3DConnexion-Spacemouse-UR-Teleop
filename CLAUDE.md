@@ -39,9 +39,14 @@ python3 scripts/check_spacemouse.py
 Both scripts print at 10Hz max and stop printing when the device is idle.
 
 ```bash
-# Check UR3 connection and status (does not move the robot)
+# Check UR3 connection and status; if ready, optionally move to home position
 python3 scripts/check_robot.py
+
+# Move to home position directly (run after check passes)
+python3 scripts/init_robot.py
 ```
+
+Home position: `[0°, -90°, 90°, -90°, -90°, 0°]` — all joints at multiples of 90°.
 
 ## Architecture
 
@@ -58,7 +63,7 @@ The system has three layers:
 | Parameter | Location | Value |
 |-----------|----------|-------|
 | `ROBOT_HOST` | `3DConnexion_UR3_Teleop.py` | `192.168.0.2` |
-| `SCALE_FACTOR` | `3DConnexion_UR3_Teleop.py` | `0.02` |
+| `SCALE_FACTOR` | `3DConnexion_UR3_Teleop.py` | `0.1` |
 | `acceleration` | `3DConnexion_UR3_Teleop.py` | `0.5` |
 | `max_value` | `Spacemouse.__init__` | `300` (wired); use `500` for wireless SpaceMouse |
 | `deadzone` | `Spacemouse.__init__` (`deadzone=`) | `0.2` — scalar applies to all 6 axes; pass a 6-tuple for per-axis control |
