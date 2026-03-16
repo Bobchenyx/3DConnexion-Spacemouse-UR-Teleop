@@ -4,20 +4,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Setup
 
-Install system dependencies and Python packages:
+Install system dependencies:
 ```bash
 sudo apt install libspnav-dev spacenavd
 sudo systemctl start spacenavd
-pip install spnav ur_rtde
 ```
 
-**Known spnav issue:** `PyCObject_AsVoidPtr` is deprecated. Find the spnav package (`find / -path "*/spnav/__init__.py"`) and replace all instances of `PyCObject_AsVoidPtr` with `PyCapsule_GetPointer` in `__init__.py`. On this machine the fix has already been applied at `/home/robotics/anaconda3/lib/python3.12/site-packages/spnav/__init__.py`.
+Create and activate the project conda environment:
+```bash
+conda create -n spacemouse-ur python=3.12
+conda activate spacemouse-ur
+pip install ur_rtde
+pip install spnav --no-build-isolation
+pip install numpy
+```
 
-**spnav install issue:** `pip install spnav` may fail due to setuptools compatibility. Use `pip install spnav --no-build-isolation` instead.
+**Known spnav issue:** `PyCObject_AsVoidPtr` is deprecated. After installing spnav, fix it:
+```bash
+# Find the installed file
+SPNAV_PATH=$(python -c "import spnav; import os; print(os.path.dirname(spnav.__file__))")/\_\_init\_\_.py
+sed -i 's/PyCObject_AsVoidPtr/PyCapsule_GetPointer/g' $SPNAV_PATH
+```
+On this machine the fix has already been applied to both `base` and `spacemouse-ur` environments.
 
 ## Running
 
 ```bash
+conda activate spacemouse-ur
+
 # UR3 teleoperation (current main script)
 python3 3DConnexion_UR3_Teleop.py
 ```
