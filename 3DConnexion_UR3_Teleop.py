@@ -64,7 +64,7 @@ class Spacemouse(Thread):
         tf_state = np.zeros_like(state)
         tf_state[:3] = self.tx_zup_spnav @ state[:3]
         tf_state[3:] = self.tx_zup_spnav @ state[3:]
-        tf_state[np.abs(tf_state) < 0.3] = 0
+        # tf_state[np.abs(tf_state) < 0.3] = 0  # deadzone is now controlled by the deadzone= parameter in the constructor
         tf_state = tf_state * SCALE_FACTOR
         return tf_state
 
@@ -102,7 +102,7 @@ ROBOT_HOST = "192.168.0.2"  # UR3 controller IP
 SCALE_FACTOR = 0.02         # Scale factor for velocity command
 
 def main():
-    sm = Spacemouse()
+    sm = Spacemouse(deadzone=0.2)  # normalized deadzone threshold [0, 1]; inputs below this value are ignored
     sm.start()
 
     rtde_c = RTDEControlInterface(ROBOT_HOST)
