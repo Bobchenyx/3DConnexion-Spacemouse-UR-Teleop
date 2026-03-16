@@ -26,6 +26,18 @@ Stop with `Ctrl+C` — this triggers graceful shutdown (stops RTDE script and Sp
 
 Reference scripts for UR5 and gripper control are in `reference/`.
 
+### Diagnostic scripts (`scripts/`)
+
+```bash
+# Raw spnav values only — minimal, no processing
+python3 scripts/check_spacemouse_raw.py
+
+# Raw + processed (deadzone-filtered, coordinate-transformed) — matches teleop behavior
+python3 scripts/check_spacemouse.py
+```
+
+Both scripts print at 10Hz max and stop printing when the device is idle.
+
 ## Architecture
 
 The system has three layers:
