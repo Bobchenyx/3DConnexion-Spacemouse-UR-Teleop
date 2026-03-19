@@ -32,13 +32,16 @@ On this machine the fix has already been applied to both `base` and `spacemouse-
 ```bash
 conda activate spacemouse-ur
 
-# UR3 teleoperation (current main script)
+# UR3 teleoperation without gripper
 python3 3DConnexion_UR3_Teleop.py
+
+# UR3 teleoperation with RS485 gripper (SpaceMouse buttons control open/close)
+python3 3DConnexion_UR3_Teleop_Gripper.py
 ```
 
 Stop with `Ctrl+C` — this triggers graceful shutdown (stops RTDE script and SpaceMouse thread).
 
-Reference scripts for UR5 and gripper control are in `reference/`.
+Reference scripts for UR5 and Robotiq gripper control are in `reference/`.
 
 ### Diagnostic scripts (`scripts/`)
 
@@ -70,7 +73,7 @@ The system has three layers:
 
 **Robot control** (RTDE): Uses `ur_rtde` to send Cartesian velocity commands (`speedL`) at 100Hz to the robot. Requires robot to be in mode 7 (running). Robot IP is hardcoded as `ROBOT_HOST = "192.168.0.2"`.
 
-**Gripper control** (`reference/robotiq_gripper.py`): Not currently in use. When connected, communicates with Robotiq HAND-E via TCP socket on port 63352. Two reference modes exist in `reference/`: button open/close, or incremental position control (0–255).
+**Gripper control** (`GripperController` class in `3DConnexion_UR3_Teleop_Gripper.py`): Sends RS485 commands over a USB-to-RS485 serial adapter (`/dev/ttyUSB0`). SpaceMouse left button closes the gripper (`clamp_min`), right button opens it (`clamp_max`). Commands run in a background thread so they never block the 100Hz control loop; edge detection ensures a held button only triggers once. Motor is enabled automatically on startup. The Robotiq HAND-E TCP-based driver in `reference/robotiq_gripper.py` is not in use.
 
 ## Key Parameters
 
@@ -88,15 +91,17 @@ The system has three layers:
 
 - **Robot**: Universal Robots UR3
 - **Input device**: 3DConnexion SpaceMouse (wired, `max_value=300`)
-- **Gripper**: Not installed — all gripper code is commented out with `[OPTIONAL - Robotiq Gripper]` markers
+- **Gripper**: RS485 industrial gripper via USB-to-RS485 adapter on `/dev/ttyUSB0`; controlled by `3DConnexion_UR3_Teleop_Gripper.py`
 - **Robot IP**: `192.168.0.2`
 - **Network**: Workstation and UR3 must be on the same subnet
 
 Before running, verify connectivity and enable Remote Control on the UR3 teach pendant.
 
-## RS485 Gripper (`gripper/`)
+## RS485 Gripper
 
-A separate subdirectory for an RS485-based industrial gripper connected via USB-to-RS485 adapter. See `gripper/CLAUDE.md` for details. Requires `pip install pyserial` and `sudo chmod 666 /dev/ttyUSB0`.
+The gripper integration lives in `3DConnexion_UR3_Teleop_Gripper.py`. The original standalone test script and command definitions are in `gripper/gripper_test.py` (see `gripper/CLAUDE.md`).
+
+Requires `pip install pyserial` and `sudo chmod 666 /dev/ttyUSB0` before running. Gripper port is configurable via `GRIPPER_PORT` at the top of the file (default `/dev/ttyUSB0`).
 
 ## Import Quirk
 
