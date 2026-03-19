@@ -93,3 +93,11 @@ The system has three layers:
 - **Network**: Workstation and UR3 must be on the same subnet
 
 Before running, verify connectivity and enable Remote Control on the UR3 teach pendant.
+
+## RS485 Gripper (`gripper/`)
+
+A separate subdirectory for an RS485-based industrial gripper connected via USB-to-RS485 adapter. See `gripper/CLAUDE.md` for details. Requires `pip install pyserial` and `sudo chmod 666 /dev/ttyUSB0`.
+
+## Import Quirk
+
+The main script filename (`3DConnexion_UR3_Teleop.py`) starts with a digit, so Python cannot import it with a normal `import` statement. The diagnostic scripts in `scripts/` work around this using `importlib.util.spec_from_file_location` to load the `Spacemouse` class directly from the file path.
